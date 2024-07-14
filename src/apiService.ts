@@ -8,7 +8,6 @@ export const fetchChatCompletion = async (
     setResponseFunction: Function,
     setLoadingFunction: Function
 ) => {
-    setLoadingFunction(true);
         try {
             const response = await axios.post(
             `${baseURL}/completions`,
@@ -16,7 +15,7 @@ export const fetchChatCompletion = async (
             "model": "gpt-4o",
             "messages": [
                 { "role": "system", "content": "You are a helpful assistant." },
-                { "role": "user","content": prompt }
+                { "role": "user", "content": prompt }
             ],
             },
             {
@@ -32,8 +31,8 @@ export const fetchChatCompletion = async (
               }
           
               const responseData = response.data;
-          
-          
+  
+  
               if (responseData && responseData.choices && responseData.choices.length > 0) {
               
                 setResponseFunction(responseData.choices[0].message.content);
