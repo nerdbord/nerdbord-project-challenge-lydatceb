@@ -10,7 +10,7 @@ export const fetchChatCompletion = async (
 ) => {
         try {
             const response = await axios.post(
-            `${baseURL}/completions`,
+            baseURL,
             {
             "model": "gpt-4o",
             "messages": [
@@ -21,7 +21,7 @@ export const fetchChatCompletion = async (
             {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: config.API_KEY,
+                Authorization:  `Bearer ${config.API_KEY}`,
                 },
               }
             );
