@@ -24,11 +24,11 @@ export default async function EventPage({
 }: {
   params: { slug: string };
 }) {
-  const event = await sanityFetch<SanityDocument>({
+  const post = await sanityFetch<SanityDocument>({
     query: EVENT_QUERY,
     params,
   });
-  const { title, publishedAt, image, body } = event;
+  const { title, publishedAt, image, body } = post;
   const eventImageUrl = image
     ? urlFor(image)?.url()
     : null;

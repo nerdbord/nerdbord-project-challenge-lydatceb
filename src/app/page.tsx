@@ -1,55 +1,78 @@
-import Link from "next/link";
+"use client";
 import { SanityDocument } from "next-sanity";
-import Image from "next/image";
-import { sanityFetch } from "@/sanity/client";
+import { useState, useEffect } from "react";
 import imageUrlBuilder from "@sanity/image-url";
+import Image from "next/image";
+import Link from "next/link";
 
-const EVENTS_QUERY = `*[
-  _type == "post"
-  && defined(slug.current)
-]{_id, title, slug, publishedAt, body, image}|order(publishedAt desc)`;
+export default function IndexPage() {
+  const [posts, setPosts] = useState<SanityDocument[]>([]);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  
 
-export default async function IndexPage() {
-  const posts = await sanityFetch<SanityDocument[]>({ query: EVENTS_QUERY });
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `/api/fetchPosts?start=${page * 5}&end=${(page + 1) * 5}`
+        );
+        const newPosts = await response.json();
+        setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+      } catch (error) {
+        console.error("Failed to fetch posts:", error);
+      }
+      setLoading(false);
+    };
+
+    fetchPosts();
+  }, [page]);
+
+  const loadMorePosts = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
 
   return (
-    <main className="flex bg-gray-100 min-h-screen flex-col p-24 gap-12">
-      <h1 className="text-4xl font-bold tracking-tighter">Posts</h1>
-      <ul className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-        {posts.map((post) => {
-          return (
-            <li className="bg-white p-4 rounded-lg" key={post._id}>
-              <div className="flex">
-                <Image
-                  src={
-                    imageUrlBuilder({
-                      projectId: "1zf5e9r5",
-                      dataset: "production",
-                    })
-                      .image(post.image)
-                      .width(50)
-                      .height(50)
-                      .url() || "https://via.placeholder.com/50x50"
-                  }
-                  alt={post.title || "Blog post"}
-                  className="mx-auto aspect-square overflow-hidden rounded-xl object-contain object-center sm:h-full"
-                  height="50"
-                  width="50"
-                />
-                <Link
-                  className="hover:underline ml-3"
-                  href={`/posts/${post.slug.current}`}
-                >
-                  <h2 className="text-xl font-semibold">{post?.title}</h2>
-                  <p className="text-gray-500">
-                    {new Date(post?.publishedAt).toLocaleDateString()}
-                  </p>
-                </Link>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-    </main>
+    <div className="flex flex-col mt-10 items-center">
+      <h1 className="text-4xl font-bold tracking-tighter mb-10">POSTY</h1>
+      <div className="flex flex-col items-start">
+        {posts.map((post) => (
+          <div key={post._id} className="flex m-2">
+            <Image
+              src={
+                imageUrlBuilder({
+                  projectId: "1zf5e9r5",
+                  dataset: "production",
+                })
+                  .image(post.image)
+                  .width(50)
+                  .height(50)
+                  .url() || "https://via.placeholder.com/50x50"
+              }
+              alt={post.title || "Blog post"}
+              className="mx-auto aspect-square overflow-hidden rounded-xl object-contain object-center sm:h-full"
+              height="50"
+              width="50"
+            />
+            <Link
+              className="hover:underline ml-3"
+              href={`/posts/${post.slug.current}`}
+            >
+              <h2 className="text-xl font-semibold">{post?.title}</h2>
+              <p className="text-gray-500">
+                {new Date(post?.publishedAt).toLocaleDateString()}
+              </p>
+            </Link>
+          </div>
+        ))}
+      </div>
+      {loading && <p>Loading...</p>}
+      {!loading && (
+        <button onClick={loadMorePosts} disabled={loading}>
+          Load More Posts
+        </button>
+      )}
+    </div>
   );
 }
