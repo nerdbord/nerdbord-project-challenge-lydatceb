@@ -1,10 +1,10 @@
 import { PortableText, type SanityDocument } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
-
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { client, sanityFetch } from "@/sanity/client";
 import Link from "next/link";
 import Image from "next/image";
+import PopupWrapper from "./popupWrapper";
 
 const EVENT_QUERY = `*[
     _type == "post" &&
@@ -33,6 +33,7 @@ export default async function EventPage({
     ? urlFor(image)?.url()
     : null;
   const postDate = new Date(publishedAt).toDateString();
+
 
   return (
     <main className="container mx-auto grid gap-12 p-12">
@@ -63,6 +64,7 @@ export default async function EventPage({
               <PortableText value={body} />
             </div>
           )}
+          <PopupWrapper/>
         </div>
         <Link href="#" scroll={true}>↑ Back to top</Link>
     </main>

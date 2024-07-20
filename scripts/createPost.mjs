@@ -1,6 +1,7 @@
 import { createClient } from "next-sanity";
 import "dotenv/config";
 
+
 const client = createClient({
   projectId: "1zf5e9r5",
   dataset: "production",
