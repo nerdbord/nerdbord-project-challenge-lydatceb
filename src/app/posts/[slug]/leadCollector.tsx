@@ -28,6 +28,7 @@ const LeadCollector: React.FC<LeadCollectorProps> = ({ email, setEmail, isOpen, 
             console.error('An error occurred:', error);
         }
         setEmail('');
+        setIsOpen(false);
     };
 
 
