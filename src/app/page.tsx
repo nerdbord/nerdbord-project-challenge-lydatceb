@@ -1,4 +1,5 @@
 "use client";
+
 import { SanityDocument } from "next-sanity";
 import { useState, useEffect } from "react";
 import imageUrlBuilder from "@sanity/image-url";
@@ -9,7 +10,6 @@ export default function IndexPage() {
   const [posts, setPosts] = useState<SanityDocument[]>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -39,22 +39,24 @@ export default function IndexPage() {
       <div className="flex flex-col items-start">
         {posts.map((post) => (
           <div key={post._id} className="flex m-2">
-            <Image
-              src={
-                imageUrlBuilder({
-                  projectId: "1zf5e9r5",
-                  dataset: "production",
-                })
-                  .image(post.image)
-                  .width(50)
-                  .height(50)
-                  .url() || "https://via.placeholder.com/50x50"
-              }
-              alt={post.title || "Blog post"}
-              className="mx-auto aspect-square overflow-hidden rounded-xl object-contain object-center sm:h-full"
-              height="50"
-              width="50"
-            />
+            {post.image && (
+              <Image
+                src={
+                  imageUrlBuilder({
+                    projectId: "1zf5e9r5",
+                    dataset: "production",
+                  })
+                    .image(post.image)
+                    .width(50)
+                    .height(50)
+                    .url() || "https://via.placeholder.com/50x50"
+                }
+                alt={post.title || "Blog post"}
+                className="mx-auto aspect-square overflow-hidden rounded-xl object-contain object-center sm:h-full"
+                height="50"
+                width="50"
+              />
+            )}
             <Link
               className="hover:underline ml-3"
               href={`/posts/${post.slug.current}`}
