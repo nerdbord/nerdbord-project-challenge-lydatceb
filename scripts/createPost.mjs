@@ -1,7 +1,6 @@
 import { createClient } from "next-sanity";
 import "dotenv/config";
 
-
 const client = createClient({
   projectId: "1zf5e9r5",
   dataset: "production",
@@ -10,7 +9,7 @@ const client = createClient({
   useCdn: false,
 });
 
-async function createPost() {
+export async function createPost() {
   const newPost = {
     _type: "post",
     title: "Sample Blog Post",
@@ -48,5 +47,3 @@ async function createPost() {
     console.error("Error creating post:", error);
   }
 }
-
-createPost();
