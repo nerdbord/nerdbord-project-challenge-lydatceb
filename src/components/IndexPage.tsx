@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import imageUrlBuilder from "@sanity/image-url";
 import Image from "next/image";
 import Link from "next/link";
+import sanityClient from "@sanity/client";
 
 export default function IndexPage() {
   const [posts, setPosts] = useState<SanityDocument[]>([]);

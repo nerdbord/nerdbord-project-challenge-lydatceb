@@ -4,18 +4,15 @@ import config from "./config";
 const baseURL = "https://training.nerdbord.io/api/v1/openai/chat/completions"
 
 export const fetchChatCompletion = async (
-    prompt: string,
-    setResponseFunction: Function,
-    setLoadingFunction: Function
-) => {
+    prompt: string ) => {
         try {
             const response = await axios.post(
             baseURL,
             {
-            "model": "gpt-4o",
-            "messages": [
-                { "role": "system", "content": "You are a helpful assistant." },
-                { "role": "user", "content": prompt }
+            model: "gpt-4o",
+            messages: [
+                { role: "system", content: "You are a helpful assistant." },
+                { role: "user", content: prompt }
             ],
             },
             {
@@ -35,14 +32,12 @@ export const fetchChatCompletion = async (
   
               if (responseData && responseData.choices && responseData.choices.length > 0) {
               
-                setResponseFunction(responseData.choices[0].message.content);
+                return(responseData.choices[0].message.content);
               } else {
                 console.error("No choices found in response.");
-                setResponseFunction("Wystąpił błąd podczas pobierania odpowiedzi.");
               }
             } catch (error) {
               console.error("Error calling GPT API:", error);
-              setResponseFunction("Wystąpił błąd podczas pobierania odpowiedzi.");
             }
-            setLoadingFunction(false);
+          return null;
           };

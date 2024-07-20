@@ -1,5 +1,7 @@
 import { createClient } from "next-sanity";
 import "dotenv/config";
+import { fetchChatCompletion } from '@/apiService'
+
 
 const client = createClient({
   projectId: "1zf5e9r5",
@@ -9,13 +11,23 @@ const client = createClient({
   useCdn: false,
 });
 
-export async function createPost() {
+async function createPost() {
+  const prompt = "Generate a blog post title, content, and image description.";
+  const generatedContent = await fetchChatCompletion(prompt);
+
+  if (!generatedContent) {
+    console.error("Failed to generate content from GPT.");
+    return;
+  }
+
+  const [title, content, imageDescription] = generatedContent.split("\n");
+
   const newPost = {
     _type: "post",
-    title: "Sample Blog Post",
+    title: title || "Default Title",
     slug: {
       _type: "slug",
-      current: "sample-blog-post",
+      current: title ? title.toLowerCase().replace(/\s+/g, '-') : "default-title",
     },
     publishedAt: new Date().toISOString(),
     /*
@@ -33,7 +45,7 @@ export async function createPost() {
         children: [
           {
             _type: "span",
-            text: "This is the body of the blog post.",
+            text: content || "Default content",
           },
         ],
       },
