@@ -9,7 +9,6 @@ const client = createClient({
   useCdn: false,
 });
 
-// function to create a new post
 async function createPost() {
   const newPost = {
     _type: "post",
@@ -42,7 +41,6 @@ async function createPost() {
   };
 
   try {
-    // create the post in Sanity
     const result = await client.create(newPost);
     console.log("Post created:", result);
   } catch (error) {
@@ -50,5 +48,4 @@ async function createPost() {
   }
 }
 
-// run the function to create the post
 createPost();
