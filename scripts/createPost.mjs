@@ -61,6 +61,10 @@ export async function createPost() {
     filename: `${title}.png`
   });
 
+  function generateUniqueKey() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+
   const newPost = {
     _type: "post",
     title: title || "Default Title",
@@ -72,9 +76,11 @@ export async function createPost() {
     body: [
       {
         _type: "block",
+        _key: generateUniqueKey(),
         children: [
           {
             _type: "span",
+            _key: generateUniqueKey(),
             text: content || "Default content",
           },
         ],
@@ -93,9 +99,9 @@ export async function createPost() {
   try {
     const result = await client.create(newPost);
     console.log("Post created:", result);
-    return result; // Zwróć utworzony post
+    return result; 
   } catch (error) {
     console.error("Error creating post:", error);
-    return null; // Zwróć null w przypadku błędu
+    return null; 
   }
 }
