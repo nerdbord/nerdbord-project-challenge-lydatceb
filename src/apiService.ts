@@ -3,8 +3,21 @@ import config from "./config";
 
 const baseURL = "https://training.nerdbord.io/api/v1/openai/chat/completions"
 
-export const fetchChatCompletion = async (
-    prompt: string ) => {
+const prompt = 
+`You run an online blog about the UEFA European Football Championship EURO 2024.
+  Your task is to prepare a new post for your blog. The post must be related to the blog's theme, but you should not repeat topics that are already on the blog.
+  Each post consists of three parts: a title, content, and an image.
+  Your post should be understandable to any football fan.
+  The topic should accurately describe the content of the post.
+  The image should be loosely related to the topic of the post.
+  Respond ONLY by correctly filling out the following JSON structure, where each field must be a string. The imageURL field can have a maximum length of 299 characters:
+  {
+  "title": "<title>",
+  "body": "<content>",
+  "imageURL": "<imageDescription>"
+  }`;
+
+export const fetchChatCompletion = async () => {
         try {
             const response = await axios.post(
             baseURL,
@@ -40,4 +53,5 @@ export const fetchChatCompletion = async (
               console.error("Error calling GPT API:", error);
             }
           return null;
-          };
+          }
+        
