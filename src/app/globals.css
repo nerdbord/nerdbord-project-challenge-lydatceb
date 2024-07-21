@@ -5,3 +5,8 @@
 *{
   scroll-behavior: smooth;
 }
+
+.drop-cap::first-letter {
+  @apply float-left text-7xl leading-none mr-0.5 font-bold;
+  /* Adjust the `text-6xl`, `leading-none`, and `mr-2` as needed */
+}
