@@ -45,7 +45,6 @@ export default function IndexPage() {
     setPage((prevPage) => prevPage + 1);
   };
 
-
   return (
     <div className="flex flex-col mt-10 items-center">
       <h1 className="text-4xl font-bold tracking-tighter mb-10">POSTY</h1>
