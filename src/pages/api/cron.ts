@@ -9,10 +9,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         //     return
         // }
 
-        const postResult = await createPost()
-        res.status(200).end(postResult);
-    }
-    catch (error) {
+        const postResult = await createPost();
+        if (postResult) {
+            res.status(200).json(postResult);
+        } else {
+            res.status(500).json({ message: "Failed to create post. Incomplete generated content from GPT." });
+        }
+    } catch (error) {
         console.log(error);
+        res.status(500).json({ message: "Internal server error." });
     }
 }

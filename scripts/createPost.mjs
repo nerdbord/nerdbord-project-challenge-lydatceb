@@ -1,6 +1,7 @@
 import { createClient } from "next-sanity";
 import dotenv from "dotenv";
 import { fetchChatCompletion } from '@/apiService';
+import { generateImage } from '@/imageService'; // Przyjmujemy, że masz taki moduł
 
 dotenv.config();
 
@@ -24,22 +25,41 @@ export async function createPost() {
 
   if (!generatedContent) {
     console.error("Failed to generate content from GPT.");
-    return;
+    return null; // Zwróć null w przypadku błędu
   }
 
+  console.log("Generated Content:", generatedContent);
+
   const contentLines = generatedContent.split("\n");
-  const titleLine = contentLines.find(line => line.startsWith("Title:"));
-  const contentLine = contentLines.find(line => line.startsWith("Content:"));
-  const imageDescriptionLine = contentLines.find(line => line.startsWith("Image Description:"));
+
+  const titleLine = contentLines.find(line => line.includes("Title:"));
+  const contentStartIndex = contentLines.findIndex(line => line.includes("Content:"));
+  const imageDescriptionStartIndex = contentLines.findIndex(line => line.includes("Image Description:"));
 
   const title = titleLine ? titleLine.replace("Title:", "").trim() : null;
-  const content = contentLine ? contentLine.replace("Content:", "").trim() : null;
-  const imageDescription = imageDescriptionLine ? imageDescriptionLine.replace("Image Description:", "").trim() : null;
+  const content = contentStartIndex !== -1
+    ? contentLines.slice(contentStartIndex + 1, imageDescriptionStartIndex).join("\n").trim()
+    : null;
+  const imageDescription = imageDescriptionStartIndex !== -1
+    ? contentLines.slice(imageDescriptionStartIndex + 1).join("\n").trim()
+    : null;
 
   if (!title || !content || !imageDescription) {
     console.error("Incomplete generated content from GPT.");
-    return;
+    return null; // Zwróć null w przypadku niekompletnej zawartości
   }
+
+  // Generowanie obrazu na podstawie opisu
+  const imageUrl = await generateImage(imageDescription);
+
+  if (!imageUrl) {
+    console.error("Failed to generate image.");
+    return null; // Zwróć null w przypadku błędu generowania obrazu
+  }
+
+  const imageAsset = await client.assets.upload('image', await axios.get(imageUrl, { responseType: 'arraybuffer' }), {
+    filename: `${title}.png`
+  });
 
   const newPost = {
     _type: "post",
@@ -60,14 +80,22 @@ export async function createPost() {
         ],
       },
     ],
+    image: {
+      _type: "image",
+      asset: {
+        _type: "reference",
+        _ref: imageAsset._id,
+      },
+    },
     imageDescription: imageDescription || "Default image description",
   };
 
   try {
     const result = await client.create(newPost);
     console.log("Post created:", result);
-    return result;
+    return result; // Zwróć utworzony post
   } catch (error) {
     console.error("Error creating post:", error);
+    return null; // Zwróć null w przypadku błędu
   }
 }
