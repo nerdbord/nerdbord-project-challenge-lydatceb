@@ -1,10 +1,23 @@
 "use client";
-import { SanityDocument } from "next-sanity";
+import { SanityDocument, createClient } from "next-sanity";
 import { useState, useEffect } from "react";
 import imageUrlBuilder from "@sanity/image-url";
 import Image from "next/image";
 import Link from "next/link";
-import sanityClient from "@sanity/client";
+
+const client = createClient({
+  projectId: "1zf5e9r5",
+  dataset: "production",
+  apiVersion: "2024-01-01",
+  token: process.env.SANITY_API_TOKEN,
+  useCdn: false,
+});
+
+const builder = imageUrlBuilder(client);
+
+function urlFor(source: any) {
+  return source ? builder.image(source).url() : "https://via.placeholder.com/50x50";
+}
 
 export default function IndexPage() {
   const [posts, setPosts] = useState<SanityDocument[]>([]);
@@ -16,10 +29,8 @@ export default function IndexPage() {
     const fetchPosts = async () => {
       setLoading(true);
       try {
-        const response = await fetch(
-          `/api/fetchPosts?start=${page * 5}&end=${(page + 1) * 5}`
-        );
-        const newPosts = await response.json();
+        const query = `*[_type == "post"] | order(publishedAt desc) [${page * 5}...${(page + 1) * 5}]`;
+        const newPosts = await client.fetch(query);
         setPosts((prevPosts) => [...prevPosts, ...newPosts]);
       } catch (error) {
         console.error("Failed to fetch posts:", error);
@@ -34,22 +45,16 @@ export default function IndexPage() {
     setPage((prevPage) => prevPage + 1);
   };
 
+
   return (
     <div className="flex flex-col mt-10 items-center">
       <h1 className="text-4xl font-bold tracking-tighter mb-10">POSTY</h1>
       <div className="flex flex-col items-start">
-        {posts.map((post) => (
+      {posts.map((post) => (
           <div key={post._id} className="flex m-2">
             <Image
               src={
-                imageUrlBuilder({
-                  projectId: "1zf5e9r5",
-                  dataset: "production",
-                })
-                  .image(post.image)
-                  .width(50)
-                  .height(50)
-                  .url() || "https://via.placeholder.com/50x50"
+                urlFor(post.image) || "https://via.placeholder.com/50x50"
               }
               alt={post.title || "Blog post"}
               className="mx-auto aspect-square overflow-hidden rounded-xl object-contain object-center sm:h-full"
