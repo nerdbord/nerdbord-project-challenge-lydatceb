@@ -29,6 +29,10 @@ export const postType = defineType({
       type: "image",
     }),
     defineField({
+      name: "imageDescription",
+      type: "string",
+    }),
+    defineField({
       name: "body",
       title: "Post body",
       type: "array",
