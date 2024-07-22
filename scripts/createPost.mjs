@@ -40,6 +40,11 @@ export async function createPost() {
   // Generowanie obrazu na podstawie opisu
   const imageID = await generateImage(imageDescription);
 
+  function generateUniqueKey() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+
+
 
   const newPost = {
     _type: "post",
@@ -52,9 +57,11 @@ export async function createPost() {
     body: [
       {
         _type: "block",
+        _key: generateUniqueKey(),
         children: [
           {
             _type: "span",
+            _key: generateUniqueKey(),
             text: content || "Default content",
           },
         ],

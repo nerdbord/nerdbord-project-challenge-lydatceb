@@ -5,10 +5,11 @@ const baseURL = "https://training.nerdbord.io/api/v1/openai/chat/completions";
 
 const prompt = `You run an online blog about the UEFA European Football Championship EURO 2024.
   Your task is to prepare a new post for your blog. The post must be related to the blog's theme, but you should not repeat topics that are already on the blog.
-  Each post consists of three parts: a title, content, and an image.
-  Your post should be understandable to any football fan.
-  The topic should accurately describe the content of the post.
+  Each post consists of three parts: the title, the body, and an image.
+  Contents of the post should be easily understandable by any football fan.
+  The title should accurately describe the body of the post.
   The image should be loosely related to the topic of the post.
+  The body of the post should be at least three paragraphs long.
   You will be provided with a list of previous blog post titles.
   Respond ONLY by correctly filling out the following JSON structure, where each field must be a string. The imageURL field has a maximum length of 299 characters:
   {
