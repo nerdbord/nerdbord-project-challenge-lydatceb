@@ -7,11 +7,13 @@ export const postType = defineType({
   fields: [
     defineField({
       name: "title",
+      title: 'Title',
       type: "string",
       validation: (rule) => rule.required().min(10).max(80),
     }),
     defineField({
       name: "slug",
+      title: 'Slug',
       type: "slug",
       options: { source: "title" },
       validation: (rule) =>
@@ -25,14 +27,23 @@ export const postType = defineType({
       validation: (rule) => rule.required().error("Required to publish the post."),
     },
     defineField({
-      name: "image",
-      type: "image",
+      name: 'body',
+      title: 'Body',
+      type: 'array',
+      of: [{ type: 'block' }],
     }),
     defineField({
-      name: "body",
-      title: "Post body",
-      type: "array",
-      of: [{ type: "block" }],
+      name: 'image',
+      title: 'Image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
+      name: 'imageDescription',
+      title: 'Image Description',
+      type: 'string',
     }),
   ],
-});
+})

@@ -28,45 +28,60 @@ export default async function EventPage({
     query: EVENT_QUERY,
     params,
   });
-  const { title, publishedAt, image, body } = post;
-  const eventImageUrl = image
-    ? urlFor(image)?.url()
-    : null;
-  const postDate = new Date(publishedAt).toDateString();
 
+  if (!post) {
+    return (
+      <main className="container mx-auto grid gap-12 p-12">
+        <div className="mb-4">
+          <Link href="/">← Back to events</Link>
+        </div>
+        <div className="flex flex-col justify-center space-y-4">
+          <div className="space-y-4">
+            <h1 className="text-4xl font-bold tracking-tighter mb-8">
+              Post not found
+            </h1>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const { title, publishedAt, image, body } = post;
+  const eventImageUrl = image ? urlFor(image)?.url() : null;
+  const postDate = new Date(publishedAt).toDateString();
 
   return (
     <main className="container mx-auto grid gap-12 p-12">
       <div className="mb-4">
         <Link href="/">← Back to events</Link>
       </div>
-        <div className="flex flex-col justify-center space-y-4">
-          <div className="space-y-4">
-            {title ? (
-              <h1 className="text-4xl font-bold tracking-tighter mb-8">
-                {title}
-              </h1>
-            ) : null}
-            <dl className="grid grid-cols-2 gap-1 text-sm font-medium sm:gap-2 lg:text-base">
-              <dd className="font-semibold">Published at: </dd>
-              <div>{postDate && <dt>{postDate}</dt>}</div>
-            </dl>
-            <Image
-              src={eventImageUrl || "https://via.placeholder.com/550x310"}
-              alt={title || "Event"}
-              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full"
-              height="310"
-              width="550"
-            />
-          </div>
-          {body && body.length > 0 && (
-            <div className="prose max-w-none">
-              <PortableText value={body} />
-            </div>
-          )}
-          <PopupWrapper/>
+      <div className="flex flex-col justify-center space-y-4">
+        <div className="space-y-4">
+          {title ? (
+            <h1 className="text-4xl font-bold tracking-tighter mb-8">
+              {title}
+            </h1>
+          ) : null}
+          <dl className="grid grid-cols-2 gap-1 text-sm font-medium sm:gap-2 lg:text-base">
+            <dd className="font-semibold">Published at: </dd>
+            <div>{postDate && <dt>{postDate}</dt>}</div>
+          </dl>
+          <Image
+            src={eventImageUrl || "https://via.placeholder.com/550x310"}
+            alt={title || "Event"}
+            className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full"
+            height="310"
+            width="550"
+          />
         </div>
-        <Link href="#" scroll={true}>↑ Back to top</Link>
+        {body && body.length > 0 && (
+          <div className="prose max-w-none">
+            <PortableText value={body} />
+          </div>
+        )}
+        <PopupWrapper/>
+      </div>
+      <Link href="#" scroll={true}>↑ Back to top</Link>
     </main>
   );
 }
