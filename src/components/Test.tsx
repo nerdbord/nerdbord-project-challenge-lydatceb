@@ -1,4 +1,4 @@
-'use client'
+/*'use client'
 import React, { useState } from 'react'
 import { fetchChatCompletion } from '@/apiService'
 
@@ -42,5 +42,5 @@ export default function Test() {
         </main>
       );
     };
-
+*/
 
