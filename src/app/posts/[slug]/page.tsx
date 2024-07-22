@@ -46,7 +46,7 @@ export default async function EventPage({
     );
   }
 
-  const { title, publishedAt, image, body } = post;
+  const { title, publishedAt, image, body, imageDescription } = post;
   const eventImageUrl = image ? urlFor(image)?.url() : null;
   const postDate = new Date(publishedAt).toDateString();
 
@@ -64,24 +64,26 @@ export default async function EventPage({
           ) : null}
           <dl className="grid grid-cols-2 gap-1 text-sm font-medium sm:gap-2 lg:text-base">
             <dd className="font-semibold">Published at: </dd>
-            <div>{postDate && <dt>{postDate}</dt>}</div>
+            <div>{postDate && <dt className=" text-right">{postDate}</dt>}</div>
           </dl>
           <Image
             src={eventImageUrl || "https://via.placeholder.com/550x310"}
-            alt={title || "Event"}
+            alt={imageDescription || title || "blog image"}
             className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full"
             height="310"
             width="550"
           />
         </div>
         {body && body.length > 0 && (
-          <div className="prose max-w-none">
+          <div className="drop-cap max-w-none">
             <PortableText value={body} />
           </div>
         )}
-        <PopupWrapper/>
       </div>
-      <Link href="#" scroll={true}>↑ Back to top</Link>
+      <PopupWrapper />
+      <Link href="#" scroll={true}>
+        ↑ Back to top
+      </Link>
     </main>
   );
 }

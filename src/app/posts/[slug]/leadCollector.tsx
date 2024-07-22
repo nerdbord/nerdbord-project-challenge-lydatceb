@@ -2,17 +2,19 @@ import { useState, FormEvent, Dispatch, SetStateAction } from 'react';
 
 interface LeadCollectorProps {
     email: string,
-    setEmail: Dispatch<SetStateAction<string>>
-    isOpen: boolean,
-    setIsOpen: Dispatch<SetStateAction<boolean>>
+    setEmail: Dispatch<SetStateAction<string>>,
+    closePopup: ()=>void,
+    isLoading: boolean,
+    setIsLoading: Dispatch<SetStateAction<boolean>>
 }
 
-const LeadCollector: React.FC<LeadCollectorProps> = ({ email, setEmail, isOpen, setIsOpen }) => {
+const LeadCollector: React.FC<LeadCollectorProps> = ({ email, setEmail, closePopup, isLoading, setIsLoading }) => {
 
 
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        setIsLoading(true)
         try {
             const response = await fetch('/api/postEmail', {
                 method: 'POST',
@@ -28,17 +30,14 @@ const LeadCollector: React.FC<LeadCollectorProps> = ({ email, setEmail, isOpen, 
             console.error('An error occurred:', error);
         }
         setEmail('');
-        setIsOpen(false);
+        closePopup();
     };
 
-
-
-    if (!isOpen) return (<></>);
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+        <div className="fixed mt-0 inset-0 flex items-center justify-center bg-black/50">
             <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
                 <button
-                    onClick={()=>{setIsOpen(false)}}
+                    onClick={closePopup}
                     className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
                 >
                     &times;
@@ -56,6 +55,7 @@ const LeadCollector: React.FC<LeadCollectorProps> = ({ email, setEmail, isOpen, 
                     />
                     <button
                         type="submit"
+                        disabled={isLoading}
                         className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
                     >
                         Subscribe
