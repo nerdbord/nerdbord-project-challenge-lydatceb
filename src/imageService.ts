@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createClient } from 'next-sanity';
 import config from "./config";
+import sharp from 'sharp';
 
 const client = createClient({
   projectId: "1zf5e9r5",
@@ -33,9 +34,14 @@ export async function generateImage(description: string) {
     const imageUrl = response.data.data[0].url;
 
     const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    const compressedImage = await sharp(imageResponse.data)
+    .resize(550, 310)
+    .webp({ quality: 80 })
+    .toBuffer();
  
-    const imageAsset = await client.assets.upload('image', imageResponse.data, {
-      filename: `${description}.png`
+    const imageAsset = await client.assets.upload('image', compressedImage, {
+      filename: `${description}.webp`
     });
 
     return imageAsset._id; 

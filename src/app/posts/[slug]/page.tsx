@@ -33,7 +33,7 @@ export default async function EventPage({
     return (
       <main className="container mx-auto grid gap-12 p-12">
         <div className="mb-4">
-          <Link href="/">← Back to events</Link>
+          <Link href="/" className="text-l hover:underline">← Back to events</Link>
         </div>
         <div className="flex flex-col justify-center space-y-4">
           <div className="space-y-4">
@@ -53,9 +53,9 @@ export default async function EventPage({
   return (
     <main className="container mx-auto grid gap-12 p-12">
       <div className="mb-4">
-        <Link href="/">← Back to events</Link>
+        <Link href="/" className="text-l hover:underline" >← Back to events</Link>
       </div>
-      <div className="flex flex-col justify-center space-y-4">
+      <div className="flex-col items-start bg-gray-200 bg-opacity-50 rounded-lg mx-auto grid gap-12 p-12">
         <div className="space-y-4">
           {title ? (
             <h1 className="text-4xl font-bold tracking-tighter mb-8">
@@ -63,25 +63,28 @@ export default async function EventPage({
             </h1>
           ) : null}
           <dl className="grid grid-cols-2 gap-1 text-sm font-medium sm:gap-2 lg:text-base">
-            <dd className="font-semibold">Published at: </dd>
-            <div>{postDate && <dt className=" text-right">{postDate}</dt>}</div>
+            <div className="font-semibold">Published at: 
+            {postDate && <dt className=" text-left">{postDate}</dt>}
+            </div>
           </dl>
+          <div className="relative w-99 h-56 object-center">
           <Image
             src={eventImageUrl || "https://via.placeholder.com/550x310"}
             alt={imageDescription || title || "blog image"}
-            className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full"
-            height="310"
-            width="550"
+            className="mx-auto rounded-xl object-cover"
+            layout="fill"
+            quality={80}
           />
+          </div>
         </div>
         {body && body.length > 0 && (
-          <div className="drop-cap max-w-none">
+          <div className="drop-cap max-w-none text-justify">
             <PortableText value={body} />
           </div>
         )}
       </div>
       <PopupWrapper />
-      <Link href="#" scroll={true}>
+      <Link href="#" scroll={true} className="text-l hover:underline">
         ↑ Back to top
       </Link>
     </main>

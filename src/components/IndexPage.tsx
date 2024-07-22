@@ -49,13 +49,13 @@ export default function IndexPage() {
   return (
     <div className="flex flex-col mt-10 items-center">
       <h1 className="text-4xl font-bold tracking-tighter mb-10">
-        ⚽️ EURO 2024 ⚽️
+        ⚽️  EURO 2024  ⚽️
       </h1>
-      <div className="flex flex-col items-start">
+      <div className="flex flex-col bg-gray-200 bg-opacity-50 rounded-lg">
         {posts.map((post) => (
-          <div key={post._id} className="flex m-2">
+          <div key={post._id} className="flex m-1 rounded-lg gap-2 p-2 hover:bg-gray-300">
             <Link
-              className="hover:underline flex flex-row"
+              className="bg-opacity-50 flex flex-row"
               href={`/posts/${post.slug.current}`}
             >
               <Image
@@ -77,7 +77,7 @@ export default function IndexPage() {
       </div>
       {loading && <p>Loading...</p>}
       {!loading && (
-        <button onClick={loadMorePosts} disabled={loading}>
+        <button onClick={loadMorePosts} disabled={loading} className="text-2xl font-bold mt-5 mb-5 hover:underline">
           Load More Posts
         </button>
       )}
