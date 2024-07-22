@@ -1,7 +1,7 @@
 import { createClient } from "next-sanity";
 import dotenv from "dotenv";
-import axios from "axios"; 
 import { fetchChatCompletion } from '@/apiService';
+import { generateImage } from '@/imageService';
 
 dotenv.config();
 
@@ -14,58 +14,39 @@ const client = createClient({
 });
 
 export async function createPost() {
-  const generatedContent = await fetchChatCompletion();
+
+  const previousTitles = await client.fetch(`*[_type == 'post']{title}`)
+  const titlesArray = previousTitles.map(item => item.title)
+
+
+  const generatedContent = await fetchChatCompletion(titlesArray);
 
   if (!generatedContent) {
     console.error("Failed to generate content from GPT.");
-    return null;
+    return null; // Zwróć null w przypadku błędu
   }
 
-  console.log("Generated Content:", generatedContent);
+    const parsedContent = JSON.parse(generatedContent)
+    const title = parsedContent.title
+    const content = parsedContent.body
+    const imageDescription = parsedContent.imageDescription
 
-  // Parsowanie wygenerowanego JSON
-  let parsedContent;
-  try {
-    parsedContent = JSON.parse(generatedContent);
-  } catch (error) {
-    console.error("Failed to parse generated content:", error);
-    return null;
-  }
-
-  console.log("Parsed Content:", parsedContent);
-
-  const { title, body: content, imageURL: imageDescription } = parsedContent;
-
-  console.log("Title:", title);
-  console.log("Content:", content);
-  console.log("Image Description:", imageDescription);
-
+    
   if (!title || !content || !imageDescription) {
     console.error("Incomplete generated content from GPT.");
-    return null;
+    return null; // Zwróć null w przypadku niekompletnej zawartości
   }
 
-  // Pobieranie obrazu z URL
-  let imageAsset;
-  try {
-    console.log("Fetching image from URL:", imageDescription);
-    const imageResponse = await axios.get(imageDescription, { responseType: 'arraybuffer' });
-    imageAsset = await client.assets.upload('image', imageResponse.data, {
-      filename: `${title}.png`
-    });
-    console.log("Image uploaded, asset ID:", imageAsset._id);
-  } catch (error) {
-    console.error("Failed to fetch or upload image:", error.message);
-    console.error("Error details:", error);
-    return null;
-  }
+  // Generowanie obrazu na podstawie opisu
+  const imageID = await generateImage(imageDescription);
+
 
   const newPost = {
     _type: "post",
     title: title || "Default Title",
     slug: {
       _type: "slug",
-      current: title ? title.toLowerCase().replace(/\s+/g, '-') : "default-title",
+      current: title ? title.toLowerCase().replace(/\W+/g, '-') : "default-title",
     },
     publishedAt: new Date().toISOString(),
     body: [
@@ -83,7 +64,7 @@ export async function createPost() {
       _type: "image",
       asset: {
         _type: "reference",
-        _ref: imageAsset._id, 
+        _ref: imageID,
       },
     },
     imageDescription: imageDescription || "Default image description",
@@ -92,9 +73,9 @@ export async function createPost() {
   try {
     const result = await client.create(newPost);
     console.log("Post created:", result);
-    return result;
+    return result; // Zwróć utworzony post
   } catch (error) {
     console.error("Error creating post:", error);
-    return null;
+    return null; // Zwróć null w przypadku błędu
   }
 }
