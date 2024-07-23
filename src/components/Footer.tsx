@@ -1,10 +1,12 @@
+'use client'
+
 import FacebookIcon from "@/app/icons/FacebookIcon";
 import InstaIcon from "@/app/icons/InstaIcon";
 import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-200 text-black py-2">
+    <footer className="bg-gray-200 text-black py-2 mt-auto">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap justify-between items-center">
           <div className="w-full md:w-auto mb-4 md:mb-0">
