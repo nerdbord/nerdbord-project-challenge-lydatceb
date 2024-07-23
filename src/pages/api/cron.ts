@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { createPost } from "../../../scripts/createPost.mjs";
 
+export const config = {
+    maxDuration: 60,
+  };
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
