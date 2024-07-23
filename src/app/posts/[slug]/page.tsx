@@ -67,12 +67,13 @@ export default async function EventPage({
             {postDate && <dt className=" text-left">{postDate}</dt>}
             </div>
           </dl>
-          <div className="relative w-99 h-56 object-center">
+          <div className="relative object-center">
           <Image
             src={eventImageUrl || "https://via.placeholder.com/550x310"}
             alt={imageDescription || title || "blog image"}
-            className="mx-auto rounded-xl object-cover"
-            layout="fill"
+            className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center"
+            height="312"
+            width="824"
             quality={80}
           />
           </div>
