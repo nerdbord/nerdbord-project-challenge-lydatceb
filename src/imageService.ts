@@ -36,7 +36,7 @@ export async function generateImage(description: string) {
     const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
 
     const compressedImage = await sharp(imageResponse.data)
-    .resize(550, 310)
+    .resize(1024, 512)
     .webp({ quality: 80 })
     .toBuffer();
  
