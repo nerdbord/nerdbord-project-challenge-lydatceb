@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/Footer";
+import { GoogleAnalytics } from "@next/third-parties/google";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "⚽️ EURO 2024 ⚽️",
+  title: "EURO 2024 Football Blog",
   description: "Your favourite footballer's favourite football blog!",
   keywords: [
     "EURO 2024",
@@ -45,7 +48,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+      <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body className={inter.className}>{children}</body>
+      <GoogleAnalytics gaId="G-W5C31NVH8M"/>
+      <Footer/>
     </html>
   );
 }

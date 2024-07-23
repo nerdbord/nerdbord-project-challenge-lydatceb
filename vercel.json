@@ -1,6 +1,6 @@
 {
     "crons": [{
-      "path": "/api/trigger-cron",
+      "path": "/api/cron",
       "schedule": "0 12 */2 * *"
     }]
   }
